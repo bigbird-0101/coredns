@@ -24,7 +24,7 @@ func init() { plugin.Register(Name, setupZookeeper) }
 func setupZookeeper(c *caddy.Controller) error {
 	z, err := zkParse(c)
 	if err != nil {
-		return plugin.Error("etcd", err)
+		return plugin.Error(Name, err)
 	}
 
 	c.OnShutdown(z.OnShutdown)
@@ -117,4 +117,4 @@ func newZookeeperClient(endpoints []string, cc *tls.Config, username, password s
 	return c, nil
 }
 
-const defaultEndpoint = "http://localhost:2181"
+const defaultEndpoint = "127.0.0.1"

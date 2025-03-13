@@ -90,9 +90,6 @@ func (z *Zookeeper) Records(ctx context.Context, state request.Request, exact bo
 func (z *Zookeeper) get(ctx context.Context, path string, recursive bool) ([]*Kv, error) {
 	r := make([]*Kv, 0)
 	if recursive {
-		if !strings.HasSuffix(path, "/") {
-			path = path + "/"
-		}
 		children, _, err2 := z.conn.Children(path)
 		if err2 != nil {
 			return nil, err2
@@ -106,8 +103,9 @@ func (z *Zookeeper) get(ctx context.Context, path string, recursive bool) ([]*Kv
 			return []*Kv{{Key: path, Value: v}}, nil
 		}
 		for _, childKey := range children {
-			value, _, err3 := z.conn.Get(childKey)
-			r = append(r, &Kv{Key: childKey, Value: value})
+			p := path + "/" + childKey
+			value, _, err3 := z.conn.Get(p)
+			r = append(r, &Kv{Key: p, Value: value})
 			if err3 != nil {
 				continue
 			}

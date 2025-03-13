@@ -78,4 +78,4 @@ func (z *Zookeeper) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.M
 }
 
 // Name implements the Handler interface.
-func (z *Zookeeper) Name() string { return "etcd" }
+func (z *Zookeeper) Name() string { return Name }
