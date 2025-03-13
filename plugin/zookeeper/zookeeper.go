@@ -13,7 +13,6 @@ import (
 	"github.com/coredns/coredns/request"
 	"github.com/go-zookeeper/zk"
 	"github.com/miekg/dns"
-	"go.etcd.io/etcd/api/v3/mvccpb"
 	"strings"
 	"time"
 )
@@ -149,7 +148,7 @@ Nodes:
 		}
 		bx[*serv] = struct{}{}
 
-		//serv.TTL = z.TTL(n, serv)
+		serv.TTL = z.TTL(serv)
 		if serv.Priority == 0 {
 			serv.Priority = priority
 		}
@@ -163,21 +162,7 @@ Nodes:
 
 // TTL returns the smaller of the etcd TTL and the service's
 // TTL. If neither of these are set (have a zero value), a default is used.
-func (z *Zookeeper) TTL(kv *mvccpb.KeyValue, serv *msg.Service) uint32 {
-	etcdTTL := uint32(kv.Lease)
-
-	if etcdTTL == 0 && serv.TTL == 0 {
-		return ttl
-	}
-	if etcdTTL == 0 {
-		return serv.TTL
-	}
-	if serv.TTL == 0 {
-		return etcdTTL
-	}
-	if etcdTTL < serv.TTL {
-		return etcdTTL
-	}
+func (z *Zookeeper) TTL(serv *msg.Service) uint32 {
 	return serv.TTL
 }
 
