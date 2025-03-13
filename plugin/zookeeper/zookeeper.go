@@ -163,6 +163,9 @@ Nodes:
 // TTL returns the smaller of the etcd TTL and the service's
 // TTL. If neither of these are set (have a zero value), a default is used.
 func (z *Zookeeper) TTL(serv *msg.Service) uint32 {
+	if serv.TTL == 0 {
+		return ttl
+	}
 	return serv.TTL
 }
 

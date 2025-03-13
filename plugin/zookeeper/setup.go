@@ -2,7 +2,6 @@ package zookeeper
 
 import (
 	"crypto/tls"
-	"fmt"
 	"github.com/coredns/caddy"
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
@@ -16,7 +15,7 @@ import (
 const (
 	priority  = 10  // default priority when nothing is set
 	ttl       = 300 // default ttl when nothing is set
-	zkTimeout = 5 * time.Second
+	zkTimeout = 10 * time.Second
 )
 
 func init() { plugin.Register(Name, setupZookeeper) }
@@ -109,9 +108,8 @@ func zkParse(c *caddy.Controller) (*Zookeeper, error) {
 }
 
 func newZookeeperClient(endpoints []string, cc *tls.Config, username, password string) (*zk.Conn, error) {
-	c, _, err := zk.Connect(endpoints, zkTimeout) //*10)
+	c, _, err := zk.Connect(endpoints, zkTimeout)
 	if err != nil {
-		fmt.Println("failed to get CPU utilization")
 		return nil, err
 	}
 	return c, nil
